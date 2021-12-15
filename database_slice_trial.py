@@ -211,49 +211,53 @@ if __name__ == "__main__":
     temp_cursor=connection.execute(
         '''
         create view crunk_2 as
-        select from_head_spec, from_head_org, from_head_dis, to_head_spec, to_head_org, to_head_dis, comp, from_triplets, to_triplets, results, triplet_count_from, sample_count_list_from, min_sample_count_from, sum_sample_count_from, sample_count_list_to, min_sample_count_to, sum_sample_count_to, distance_from_root_s_from, distance_from_furthest_leaf_s_from, distance_from_root_s_to, distance_from_furthest_leaf_s_to, distance_from_root_o_from, distance_from_furthest_leaf_o_from, distance_from_root_o_to, distance_from_furthest_leaf_o_to, distance_from_root_d_from, distance_from_furthest_leaf_d_from, distance_from_root AS distance_from_root_d_to, distance_from_furthest_leaf AS distance_from_furthest_leaf_d_to from (
-
-            select from_head_spec, from_head_org, from_head_dis, to_head_spec, to_head_org, to_head_dis, comp, from_triplets, to_triplets, results, triplet_count_from, sample_count_list_from, min_sample_count_from, sum_sample_count_from, sample_count_list_to, min_sample_count_to, sum_sample_count_to, distance_from_root_s_from, distance_from_furthest_leaf_s_from, distance_from_root_s_to, distance_from_furthest_leaf_s_to, distance_from_root_o_from, distance_from_furthest_leaf_o_from, distance_from_root_o_to, distance_from_furthest_leaf_o_to, distance_from_root AS distance_from_root_d_from, distance_from_furthest_leaf AS distance_from_furthest_leaf_d_from from (
-                select from_head_spec, from_head_org, from_head_dis, to_head_spec, to_head_org, to_head_dis, comp, from_triplets, to_triplets, results, triplet_count_from, sample_count_list_from, min_sample_count_from, sum_sample_count_from, sample_count_list_to, min_sample_count_to, sum_sample_count_to, distance_from_root_s_from, distance_from_furthest_leaf_s_from, distance_from_root_s_to, distance_from_furthest_leaf_s_to, distance_from_root_o_from, distance_from_furthest_leaf_o_from, distance_from_root AS distance_from_root_o_to, distance_from_furthest_leaf AS distance_from_furthest_leaf_o_to from (
-                    select from_head_spec, from_head_org, from_head_dis, to_head_spec, to_head_org, to_head_dis, comp, from_triplets, to_triplets, results, triplet_count_from, sample_count_list_from, min_sample_count_from, sum_sample_count_from, sample_count_list_to, min_sample_count_to, sum_sample_count_to, distance_from_root_s_from, distance_from_furthest_leaf_s_from, distance_from_root_s_to, distance_from_furthest_leaf_s_to, distance_from_root AS distance_from_root_o_from, distance_from_furthest_leaf AS distance_from_furthest_leaf_o_from from (
-                        select from_head_spec, from_head_org, from_head_dis, to_head_spec, to_head_org, to_head_dis, comp, from_triplets, to_triplets, results, triplet_count_from, sample_count_list_from, min_sample_count_from, sum_sample_count_from, sample_count_list_to, min_sample_count_to, sum_sample_count_to, distance_from_root_s_from, distance_from_furthest_leaf_s_from, distance_from_root AS distance_from_root_s_to, distance_from_furthest_leaf AS distance_from_furthest_leaf_s_to from (
-                            select from_head_spec, from_head_org, from_head_dis, to_head_spec, to_head_org, to_head_dis, comp, from_triplets, to_triplets, results, triplet_count_from, sample_count_list_from, min_sample_count_from, sum_sample_count_from, sample_count_list_to, min_sample_count_to, sum_sample_count_to, distance_from_root AS distance_from_root_s_from, distance_from_furthest_leaf AS distance_from_furthest_leaf_s_from from (
-                                select from_head_spec, from_head_org, from_head_dis, to_head_spec, to_head_org, to_head_dis, comp, from_triplets, to_triplets, results, triplet_count_from, sample_count_list_from, min_sample_count_from, sum_sample_count_from, sample_count_list AS sample_count_list_to, min_sample_count AS min_sample_count_to, sum_sample_count AS sum_sample_count_to from 
-                                (
-                                    select from_head_spec, from_head_org, from_head_dis, to_head_spec, to_head_org, to_head_dis, comp, from_triplets, to_triplets, results, triplet_count AS triplet_count_from, sample_count_list AS sample_count_list_from, min_sample_count AS min_sample_count_from, sum_sample_count AS sum_sample_count_from from (
-                                            crunk_1
-                                            inner join
-                                                unique_reduced_trip_list_to_properties
-                                                on from_triplets = unique_triplets
-                                        ) AS temp_1
-                                ) AS temp_2
-                                inner join 
-                                    unique_reduced_trip_list_to_properties
-                                    on to_triplets = unique_reduced_trip_list_to_properties.unique_triplets
-                            ) AS temp_3
+        select from_head_spec, from_head_org, from_head_dis, to_head_spec, to_head_org, to_head_dis, comp, from_triplets, to_triplets, results, triplet_count_from, sample_count_list_from, min_sample_count_from, sum_sample_count_from, from_triplet_list, sample_count_list_to, min_sample_count_to, sum_sample_count_to, to_triplet_list, distance_from_root_s_from, distance_from_furthest_leaf_s_from, distance_from_root_s_to, distance_from_furthest_leaf_s_to, distance_from_root_o_from, distance_from_furthest_leaf_o_from, distance_from_root_o_to, distance_from_furthest_leaf_o_to, distance_from_root_d_from, distance_from_furthest_leaf_d_from, distance_from_root_d_to, distance_from_furthest_leaf_d_to, distance_from_root AS distance_from_root_comp, distance_from_furthest_leaf AS distance_from_furthest_leaf_comp from (
+            select from_head_spec, from_head_org, from_head_dis, to_head_spec, to_head_org, to_head_dis, comp, from_triplets, to_triplets, results, triplet_count_from, sample_count_list_from, min_sample_count_from, sum_sample_count_from, from_triplet_list, sample_count_list_to, min_sample_count_to, sum_sample_count_to, to_triplet_list, distance_from_root_s_from, distance_from_furthest_leaf_s_from, distance_from_root_s_to, distance_from_furthest_leaf_s_to, distance_from_root_o_from, distance_from_furthest_leaf_o_from, distance_from_root_o_to, distance_from_furthest_leaf_o_to, distance_from_root_d_from, distance_from_furthest_leaf_d_from, distance_from_root AS distance_from_root_d_to, distance_from_furthest_leaf AS distance_from_furthest_leaf_d_to from (
+                select from_head_spec, from_head_org, from_head_dis, to_head_spec, to_head_org, to_head_dis, comp, from_triplets, to_triplets, results, triplet_count_from, sample_count_list_from, min_sample_count_from, sum_sample_count_from, from_triplet_list, sample_count_list_to, min_sample_count_to, sum_sample_count_to, to_triplet_list, distance_from_root_s_from, distance_from_furthest_leaf_s_from, distance_from_root_s_to, distance_from_furthest_leaf_s_to, distance_from_root_o_from, distance_from_furthest_leaf_o_from, distance_from_root_o_to, distance_from_furthest_leaf_o_to, distance_from_root AS distance_from_root_d_from, distance_from_furthest_leaf AS distance_from_furthest_leaf_d_from from (
+                    select from_head_spec, from_head_org, from_head_dis, to_head_spec, to_head_org, to_head_dis, comp, from_triplets, to_triplets, results, triplet_count_from, sample_count_list_from, min_sample_count_from, sum_sample_count_from, from_triplet_list, sample_count_list_to, min_sample_count_to, sum_sample_count_to, to_triplet_list, distance_from_root_s_from, distance_from_furthest_leaf_s_from, distance_from_root_s_to, distance_from_furthest_leaf_s_to, distance_from_root_o_from, distance_from_furthest_leaf_o_from, distance_from_root AS distance_from_root_o_to, distance_from_furthest_leaf AS distance_from_furthest_leaf_o_to from (
+                        select from_head_spec, from_head_org, from_head_dis, to_head_spec, to_head_org, to_head_dis, comp, from_triplets, to_triplets, results, triplet_count_from, sample_count_list_from, min_sample_count_from, sum_sample_count_from, from_triplet_list, sample_count_list_to, min_sample_count_to, sum_sample_count_to, to_triplet_list, distance_from_root_s_from, distance_from_furthest_leaf_s_from, distance_from_root_s_to, distance_from_furthest_leaf_s_to, distance_from_root AS distance_from_root_o_from, distance_from_furthest_leaf AS distance_from_furthest_leaf_o_from from (
+                            select from_head_spec, from_head_org, from_head_dis, to_head_spec, to_head_org, to_head_dis, comp, from_triplets, to_triplets, results, triplet_count_from, sample_count_list_from, min_sample_count_from, sum_sample_count_from, from_triplet_list, sample_count_list_to, min_sample_count_to, sum_sample_count_to, to_triplet_list, distance_from_root_s_from, distance_from_furthest_leaf_s_from, distance_from_root AS distance_from_root_s_to, distance_from_furthest_leaf AS distance_from_furthest_leaf_s_to from (
+                                select from_head_spec, from_head_org, from_head_dis, to_head_spec, to_head_org, to_head_dis, comp, from_triplets, to_triplets, results, triplet_count_from, sample_count_list_from, min_sample_count_from, sum_sample_count_from, from_triplet_list, sample_count_list_to, min_sample_count_to, sum_sample_count_to,  to_triplet_list, distance_from_root AS distance_from_root_s_from, distance_from_furthest_leaf AS distance_from_furthest_leaf_s_from from (
+                                    select from_head_spec, from_head_org, from_head_dis, to_head_spec, to_head_org, to_head_dis, comp, from_triplets, to_triplets, results, triplet_count_from, sample_count_list_from, min_sample_count_from, sum_sample_count_from, from_triplet_list, sample_count_list AS sample_count_list_to, min_sample_count AS min_sample_count_to, sum_sample_count AS sum_sample_count_to, unique_triplet_list_real AS to_triplet_list from 
+                                    (
+                                        select from_head_spec, from_head_org, from_head_dis, to_head_spec, to_head_org, to_head_dis, comp, from_triplets, to_triplets, results, triplet_count AS triplet_count_from, sample_count_list AS sample_count_list_from, min_sample_count AS min_sample_count_from, sum_sample_count AS sum_sample_count_from, unique_triplet_list_real AS from_triplet_list from (
+                                                crunk_1
+                                                inner join
+                                                    unique_reduced_trip_list_to_properties
+                                                    on from_triplets = unique_triplets
+                                            ) AS temp_1
+                                    ) AS temp_2
+                                    inner join 
+                                        unique_reduced_trip_list_to_properties
+                                        on to_triplets = unique_reduced_trip_list_to_properties.unique_triplets
+                                ) AS temp_3
+                                inner join
+                                    hierarchy_filter_table_species
+                                    on from_head_spec=node_id
+                            ) AS temp_4
                             inner join
                                 hierarchy_filter_table_species
-                                on from_head_spec=node_id
-                        ) AS temp_4
+                                on to_head_spec=node_id
+                        ) AS temp_5
                         inner join
-                            hierarchy_filter_table_species
-                            on to_head_spec=node_id
-                    ) AS temp_5
+                            hierarchy_filter_table_organ
+                            on from_head_org=node_id
+                    ) AS temp_6
                     inner join
                         hierarchy_filter_table_organ
-                        on from_head_org=node_id
-                ) AS temp_6
+                        on to_head_org=node_id
+                ) AS temp_7
                 inner join
-                    hierarchy_filter_table_organ
-                    on to_head_org=node_id
-            ) AS temp_7
+                    hierarchy_filter_table_disease
+                    on from_head_dis=node_id
+            ) AS temp_8
             inner join
                 hierarchy_filter_table_disease
-                on from_head_dis=node_id
-        ) AS temp_8
+                on to_head_dis=node_id
+        ) AS temp_9
         inner join
-            hierarchy_filter_table_disease
-            on to_head_dis=node_id
+            hierarchy_filter_table_compound
+            on comp=node_id
         ;
         '''
     )
@@ -284,7 +288,10 @@ if __name__ == "__main__":
                 ( distance_from_root_d_from  > 3) AND
                 ( distance_from_furthest_leaf_d_from  > 3) AND
                 ( distance_from_root_d_to  > 3) AND
-                ( distance_from_furthest_leaf_d_to > 3);
+                ( distance_from_furthest_leaf_d_to > 3) AND
+                ( distance_from_root_comp  > 3) AND
+                ( distance_from_furthest_leaf_comp > 3)                
+                ;
         '''
         #will want to 
     )

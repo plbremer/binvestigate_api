@@ -6,7 +6,7 @@ class BasicTableQuery():
     def init():
         pass
 
-    def build_view_1(self,temp_from_species,temp_from_organ,temp_from_disease,temp_to_species,temp_to_organ,temp_to_disease,temp_compound):
+    def build_view_1(self,temp_from_species,temp_from_organ,temp_from_disease,temp_to_species,temp_to_organ,temp_to_disease,temp_compound,temp_limit,temp_offset):
         self.view_1=f'''
             create temp view temp_view_1 as                                                                                                                                                                                                                                                             
             select from_head_spec, from_head_org, from_head_dis, to_head_spec, to_head_org, to_head_dis, comp, from_triplets, to_triplets, results from (
@@ -74,7 +74,8 @@ class BasicTableQuery():
                 from_triplets_inter_removed_if_nec = from_triplets AND
                 to_triplets_inter_removed_if_nec = to_triplets AND
                 comp = compound
-            );
+            )
+            limit {temp_limit} offset {temp_offset};
         '''
 
     def build_view_2(self):

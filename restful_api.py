@@ -16,16 +16,23 @@ api=Api(app)
 
 
 
-my_server='localhost'
-my_database='binvestigate_first'
+# my_server='localhost'
+# my_database='binvestigate_first'
+# my_dialect='postgresql'
+# my_driver='psycopg2'
+# my_username='rictuar'
+# my_password='elaine123'
+# my_connection=f'{my_dialect}+{my_driver}://{my_username}:{my_password}@{my_server}/{my_database}'
+# my_engine=create_engine(my_connection)#,echo=True)
+#connection=engine.connect()
+my_server='fold-result-database.czbab8f7pgfj.us-east-2.rds.amazonaws.com:5430'
+my_database='foldresults'
 my_dialect='postgresql'
 my_driver='psycopg2'
-my_username='rictuar'
+my_username='postgres'
 my_password='elaine123'
 my_connection=f'{my_dialect}+{my_driver}://{my_username}:{my_password}@{my_server}/{my_database}'
 my_engine=create_engine(my_connection)#,echo=True)
-#connection=engine.connect()
-
 
 
 # def list_of_list_parser(temp_list_of_lists):
@@ -85,7 +92,9 @@ class FoldChangeTable(Resource):
             request.json['store_to_species']['species'],
             request.json['store_to_organ']['organ'],
             request.json['store_to_disease']['disease'],
-            request.json['store_compound']['compounds']
+            request.json['store_compound']['compounds'],
+            request.json['store_result']['page_size'],
+            (request.json['store_result']['page_size']*request.json['store_result']['page_current'])
         )
         #build_view_1(temp_from_species,temp_from_organ,temp_from_disease,temp_to_species,temp_to_organ,temp_to_disease,temp_compound)
 

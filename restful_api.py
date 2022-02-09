@@ -16,23 +16,25 @@ api=Api(app)
 
 
 
-# my_server='localhost'
-# my_database='binvestigate_first'
-# my_dialect='postgresql'
-# my_driver='psycopg2'
-# my_username='rictuar'
-# my_password='elaine123'
-# my_connection=f'{my_dialect}+{my_driver}://{my_username}:{my_password}@{my_server}/{my_database}'
-# my_engine=create_engine(my_connection)#,echo=True)
-#connection=engine.connect()
-my_server='fold-result-database.czbab8f7pgfj.us-east-2.rds.amazonaws.com:5430'
-my_database='foldresults'
+my_server='localhost'
+my_database='binvestigate_first'
 my_dialect='postgresql'
 my_driver='psycopg2'
-my_username='postgres'
+my_username='rictuar'
 my_password='elaine123'
 my_connection=f'{my_dialect}+{my_driver}://{my_username}:{my_password}@{my_server}/{my_database}'
 my_engine=create_engine(my_connection)#,echo=True)
+#connection=engine.connect()
+
+
+# my_server='fold-result-database.czbab8f7pgfj.us-east-2.rds.amazonaws.com:5430'
+# my_database='foldresults'
+# my_dialect='postgresql'
+# my_driver='psycopg2'
+# my_username='postgres'
+# my_password='elaine123'
+# my_connection=f'{my_dialect}+{my_driver}://{my_username}:{my_password}@{my_server}/{my_database}'
+# my_engine=create_engine(my_connection)#,echo=True)
 
 
 # def list_of_list_parser(temp_list_of_lists):
@@ -58,8 +60,8 @@ class FoldChangeTable(Resource):
         #pprint(Resource.args)
         #pprint(vars(self))
         #pprint(vars(request))
-        pprint(request.json)
-        print(request.json['store_compound'])
+        # pprint(request.json)
+        # print(request.json['store_compound'])
         # print(request.json['from_organ'])
         # print(request.json['from_organ'])
         # print('----------------------------------------------------')
@@ -122,19 +124,19 @@ class FoldChangeTable(Resource):
 
         # print(temp_cursor)
 
-        print(temp_BasicTableQuery.view_1)
-        print('--------------------------------------------------------------')
-        print(temp_BasicTableQuery.view_2)
-        print('--------------------------------------------------------------')
-        print(temp_BasicTableQuery.view_3)
-        print('--------------------------------------------------------------')
+        # print(temp_BasicTableQuery.view_1)
+        # print('--------------------------------------------------------------')
+        # print(temp_BasicTableQuery.view_2)
+        # print('--------------------------------------------------------------')
+        # print(temp_BasicTableQuery.view_3)
+        # print('--------------------------------------------------------------')
 
 
 
 
 
         connection=my_engine.connect()
-        connection.execute(
+        temp_cursor=connection.execute(
             temp_BasicTableQuery.view_1
         )
         connection.execute(
@@ -148,6 +150,13 @@ class FoldChangeTable(Resource):
             select * from temp_view_3;
             '''
         )
+
+
+
+
+
+
+
         # connection.execute(
         #     temp_BasicTableQuery.delete_views
         # )

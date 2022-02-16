@@ -94,9 +94,7 @@ class FoldChangeTable(Resource):
             request.json['store_to_species']['species'],
             request.json['store_to_organ']['organ'],
             request.json['store_to_disease']['disease'],
-            request.json['store_compound']['compounds'],
-            request.json['store_result']['page_size'],
-            (request.json['store_result']['page_size']*request.json['store_result']['page_current'])
+            request.json['store_compound']['compounds']
         )
         #build_view_1(temp_from_species,temp_from_organ,temp_from_disease,temp_to_species,temp_to_organ,temp_to_disease,temp_compound)
 
@@ -145,9 +143,14 @@ class FoldChangeTable(Resource):
         connection.execute(
             temp_BasicTableQuery.view_3
         )
+
+        temp_limit=request.json['store_result']['page_size']
+        temp_offset=(request.json['store_result']['page_size']*request.json['store_result']['page_current'])
         temp_cursor=connection.execute(
-            '''
-            select * from temp_view_3;
+            f'''
+            select * from temp_view_3
+            limit {temp_limit} offset {temp_offset}
+            ;
             '''
         )
 

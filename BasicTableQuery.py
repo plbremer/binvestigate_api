@@ -14,7 +14,7 @@ class BasicTableQuery():
     def init():
         pass
 
-    def build_view_1(self,temp_from_species,temp_from_organ,temp_from_disease,temp_to_species,temp_to_organ,temp_to_disease,temp_compound,temp_limit,temp_offset):
+    def build_view_1(self,temp_from_species,temp_from_organ,temp_from_disease,temp_to_species,temp_to_organ,temp_to_disease,temp_compound):
         self.view_1=f'''
             create temp view temp_view_1 as                                                                                                                                                                                                                                                             
             select from_head_spec, from_head_org, from_head_dis, to_head_spec, to_head_org, to_head_dis, result_3.comp, result_3.from_triplets, result_3.to_triplets, results_fold_average, results_fold_median, results_sig_mannwhitney, results as results_sig_welch from
@@ -111,7 +111,7 @@ class BasicTableQuery():
                 result_3.comp = fold_results_signifigance_matrix_welch.compound
 
 
-            limit {temp_limit} offset {temp_offset};
+                ;
         '''
 
     def build_view_2(self):
@@ -190,8 +190,8 @@ class BasicTableQuery():
         create temp view temp_view_3 as
         select * from temp_view_2
             where
-                ( results_fold_median > {fold_change_input} OR results_fold_median < -{fold_change_input} ) AND
-                ( results_fold_average > {fold_change_input} OR results_fold_average < -{fold_change_input} ) AND
+                ( (results_fold_median >= {fold_change_input}) OR (results_fold_median <= -{fold_change_input}) ) AND
+                ( (results_fold_average >= {fold_change_input}) OR (results_fold_average <= -{fold_change_input}) ) AND
                 ( triplet_count_from >= {min_triplet_input}) AND
                 ( triplet_count_to >= {min_triplet_input}) AND
                 ( min_sample_count_from >= {min_count_input}) AND

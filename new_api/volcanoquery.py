@@ -1,13 +1,8 @@
 
 
-class LeafQuery():
+class VolcanoQuery():
 
-    def init():
-        pass
-
-    def build_view(
-        self,
-        from_species,
+    def __init__(self,
         from_species,
         from_organ,
         from_disease,
@@ -53,12 +48,12 @@ class LeafQuery():
                     from 
                     headnode_pairs_to_triplet_list_pair hpttlp 
                     where 
-                    hpttlp.species_headnode_from = {from_species} and
-                    hpttlp.organ_headnode_from = {from_organ} and
-                    hpttlp.disease_headnode_from = {from_disease} and
-                    hpttlp.species_headnode_to = {to_species} and
-                    hpttlp.organ_headnode_to = {to_organ} and
-                    hpttlp.disease_headnode_to = {to_disease}
+                    hpttlp.species_headnode_from = '{from_species}' and
+                    hpttlp.organ_headnode_from = '{from_organ}' and
+                    hpttlp.disease_headnode_from = '{from_disease}' and
+                    hpttlp.species_headnode_to = '{to_species}' and
+                    hpttlp.organ_headnode_to = '{to_organ}' and
+                    hpttlp.disease_headnode_to = '{to_disease}'
                 ) as extract_triplet_codes
             inner join 
             combined_results cr 

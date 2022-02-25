@@ -7,7 +7,8 @@ from sqlalchemy import create_engine
 from sqlalchemy import Table, String
 from sqlalchemy.dialects import postgresql
 
-from leafquery import LeafQuery
+from volcanoquery import VolcanoQuery
+from metadataquery import MetadataQuery
 
 app=Flask(__name__)
 api=Api(app)
@@ -22,7 +23,7 @@ my_connection=f'{my_dialect}+{my_driver}://{my_username}:{my_password}@{my_serve
 my_engine=create_engine(my_connection)
 
 
-class LeafResource(Resource):
+class VolcanoResource(Resource):
 
     def post(self):
         '''
@@ -43,7 +44,7 @@ class LeafResource(Resource):
         # "fold_average_min":0,
         # "p_welch_max":1,
         # "p_mann_max":1
-        temp_LeafQuery=LeafQuery(
+        temp_VolcanoQuery=VolcanoQuery(
             request.json['from_species'],
             request.json['from_organ'],
             request.json['from_disease'],
@@ -57,12 +58,12 @@ class LeafResource(Resource):
             request.json['p_welch_max'],
             request.json['p_welch_max']
         )
-        print(temp_LeafQuery.query)
+        print(temp_VolcanoQuery.query)
         
 
         #actually make the conneciton and the call
         connection=my_engine.connect()
-        temp_cursor=connection.execute(temp_LeafQuery.query)
+        temp_cursor=connection.execute(temp_VolcanoQuery.query)
 
         if (temp_cursor.rowcount <= 0):
             connection.close()
@@ -78,7 +79,44 @@ class LeafResource(Resource):
             return temp_result
 
 
-api.add_resource(LeafResource,'/leafresource/')
+class MetadataResource(Resource):
+
+    def post(self):
+        '''
+        should check if each species,organ,disease headnode in headnodes_to_triplets
+        should verify types...
+        '''
+        temp_MetadataQuery=MetadataQuery(
+            request.json['from_species'],
+            request.json['from_organ'],
+            request.json['from_disease'],
+            request.json['to_species'],
+            request.json['to_organ'],
+            request.json['to_disease'],
+        )
+        print(temp_MetadataQuery.query)
+
+        #actually make the conneciton and the call
+        connection=my_engine.connect()
+        temp_cursor=connection.execute(temp_MetadataQuery.query)
+
+        if (temp_cursor.rowcount <= 0):
+            connection.close()
+            #https://stackoverflow.com/questions/8645250/how-to-close-sqlalchemy-connection-in-mysql
+            my_engine.dispose()
+            print('row count of final result cursor less than 1')
+            return 'fail'
+        else:
+            temp_result=json.dumps([dict(r) for r in temp_cursor])
+            connection.close()
+            #https://stackoverflow.com/questions/8645250/how-to-close-sqlalchemy-connection-in-mysql
+            my_engine.dispose()
+            return temp_result
+
+
+
+api.add_resource(VolcanoResource,'/volcanoresource/')
+api.add_resource(MetadataResource,'/metadataresource/')
 
 if __name__ == '__main__':
     app.run(debug=True)

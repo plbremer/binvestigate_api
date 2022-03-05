@@ -13,18 +13,17 @@ class MetadataQuery:
     ):
 
         self.query=f'''
-        
             select 
+                unique_triplet_list_real_from,
+                triplet_count_from,
+                sample_count_list_from,
+                min_sample_count_from,
+                sum_sample_count_from,
+                unique_triplet_list_real as unique_triplet_list_real_to,
                 triplet_count as triplet_count_to,
                 sample_count_list as sample_count_list_to,
                 min_sample_count as min_sample_count_to,
-                sum_sample_count as sum_sample_count_to,
-                unique_triplet_list_real as unique_triplet_list_real_to,
-                triplet_count as triplet_count_from,
-                sample_count_list as sample_count_list_from,
-                min_sample_count as min_sample_count_from,
-                sum_sample_count as sum_sample_count_from,
-                unique_triplet_list_real as unique_triplet_list_real_from
+                sum_sample_count as sum_sample_count_to
             from (
                 select
                     to_triplets_inter_removed_if_nec,
@@ -42,12 +41,12 @@ class MetadataQuery:
                     from 
                     headnode_pairs_to_triplet_list_pair hpttlp 
                     where 
-                    hpttlp.species_headnode_from = '{from_species}' and
-                    hpttlp.organ_headnode_from = '{from_organ}' and
-                    hpttlp.disease_headnode_from = '{from_disease}' and
-                    hpttlp.species_headnode_to = '{to_species}' and
-                    hpttlp.organ_headnode_to = '{to_organ}' and
-                    hpttlp.disease_headnode_to = '{to_disease}'
+                        hpttlp.species_headnode_from = '{from_species}' and
+                        hpttlp.organ_headnode_from = '{from_organ}' and
+                        hpttlp.disease_headnode_from = '{from_disease}' and
+                        hpttlp.species_headnode_to = '{to_species}' and
+                        hpttlp.organ_headnode_to = '{to_organ}' and
+                        hpttlp.disease_headnode_to = '{to_disease}'
                     ) as extract_triplet_codes
                 inner join 
                 unique_reduced_trip_list_to_properties urtltp 
@@ -58,5 +57,4 @@ class MetadataQuery:
             unique_reduced_trip_list_to_properties urtltp
             on
             from_info.to_triplets_inter_removed_if_nec=urtltp.unique_triplets 
-
         '''

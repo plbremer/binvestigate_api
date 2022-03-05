@@ -58,7 +58,7 @@ class VolcanoResource(Resource):
             request.json['p_welch_max'],
             request.json['p_welch_max']
         )
-        print(temp_VolcanoQuery.query)
+        pprint(temp_VolcanoQuery.query)
         
 
         #actually make the conneciton and the call
@@ -94,7 +94,7 @@ class MetadataResource(Resource):
             request.json['to_organ'],
             request.json['to_disease'],
         )
-        print(temp_MetadataQuery.query)
+        pprint(temp_MetadataQuery.query)
 
         #actually make the conneciton and the call
         connection=my_engine.connect()

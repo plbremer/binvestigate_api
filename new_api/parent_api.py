@@ -10,6 +10,8 @@ from sqlalchemy.dialects import postgresql
 from volcanoquery import VolcanoQuery
 from metadataquery import MetadataQuery
 
+from rootdistanceresource import RootDistanceResource
+
 app=Flask(__name__)
 api=Api(app)
 
@@ -117,6 +119,7 @@ class MetadataResource(Resource):
 
 api.add_resource(VolcanoResource,'/volcanoresource/')
 api.add_resource(MetadataResource,'/metadataresource/')
+api.add_resource(RootDistanceResource,'/rootdistanceresource/')
 
 if __name__ == '__main__':
     app.run(debug=True)

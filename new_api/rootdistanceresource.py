@@ -1,6 +1,7 @@
 import networkx as nx
 import pathlib
 
+from rootdistancequery import RootDistanceQuery
 
 from flask import Flask,request
 from flask_restful import Api, Resource, reqparse
@@ -27,6 +28,15 @@ class RootDistanceResource(Resource):
         to_species=str(request.json['to_species'])
         to_organ=request.json['to_organ']
         to_disease=request.json['to_disease']
+        compound_dfr=request.json['compound_dfr']
+        species_from_dfr=request.json['species_from_dfr']
+        organ_from_dfr=request.json['organ_from_dfr']
+        disease_from_dfr=request.json['disease_from_dfr']
+        species_to_dfr=request.json['species_to_dfr']
+        organ_to_dfr=request.json['organ_to_dfr']
+        disease_to_dfr=request.json['disease_to_dfr']
+        temp_limit=request.json['page_size']
+        temp_offset=(request.json['page_size']*request.json['page_current'])        
 
         compound_networkx_path=DATA_PATH.joinpath("compounds_networkx.bin")
         compound_networkx=nx.readwrite.gpickle.read_gpickle(compound_networkx_path)
@@ -83,10 +93,68 @@ class RootDistanceResource(Resource):
         disease_path_from=list(disease_path_from)
         disease_path_to=list(disease_path_to)
 
-        print(compound_path)
-        print(species_path_from)
-        print(species_path_to)
-        print(organ_path_from)
-        print(organ_path_to)
-        print(disease_path_from)
-        print(disease_path_to)
+        my_RootDistanceQuery=RootDistanceQuery()
+        my_RootDistanceQuery.build_node_search_part_1_from(
+            species_from_dfr,
+            organ_from_dfr,
+            disease_from_dfr,
+            species_from_dfr,
+            organ_from_dfr,
+            disease_from_dfr
+        )
+        my_RootDistanceQuery.build_node_search_part_1_to(
+            species_to_dfr,
+            organ_to_dfr,
+            disease_to_dfr,
+            species_to_dfr,
+            organ_to_dfr,
+            disease_to_dfr
+        )
+        my_RootDistanceQuery.build_node_search_part_2()
+        my_RootDistanceQuery.build_node_search_part_3(
+            compound_dfr,
+            compound_path
+        )
+        my_RootDistanceQuery.build_node_search_part_4()
+
+        # #we delete previously existing views here so that we can execute whatever
+        # my_RootDistanceQuery.build_delete_views()
+
+        connection=my_engine.connect()
+        connection.execute(
+            my_RootDistanceQuery.build_node_search_part_1_from
+        )
+        connection.execute(
+            my_RootDistanceQuery.build_node_search_part_1_to
+        )
+        connection.execute(
+            my_RootDistanceQuery.build_node_search_part_2
+        )
+        connection.execute(
+            my_RootDistanceQuery.build_node_search_part_3
+        )
+        connection.execute(
+            my_RootDistanceQuery.build_node_search_part_4
+        )
+        connection.execute(
+            my_RootDistanceQuery.build_node_search_part_5
+        )
+        temp_cursor=connection.execute(
+            f'''
+            select * from node_search_part_5
+            limit {temp_limit} offset {temp_offset}
+            '''
+        )
+
+        if (temp_cursor.rowcount <= 0):
+            connection.close()
+            #https://stackoverflow.com/questions/8645250/how-to-close-sqlalchemy-connection-in-mysql
+            my_engine.dispose()
+            print('row count of final result cursor less than 1')
+            return 'fail'
+        else:
+            temp_result=json.dumps([dict(r) for r in temp_cursor])
+            connection.close()
+            #https://stackoverflow.com/questions/8645250/how-to-close-sqlalchemy-connection-in-mysql
+            my_engine.dispose()
+            return temp_result        

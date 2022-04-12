@@ -1,4 +1,4 @@
-class BasicTableQuery():
+class RootDistanceQuery():
 
     def init():
         pass
@@ -259,6 +259,7 @@ class BasicTableQuery():
     def build_node_search_part_5(self):
 
         self.node_search_part_5=f'''
+        create view node_search_part_5 as
         select 
             species_node_from,
             organ_node_from,

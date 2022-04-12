@@ -38,66 +38,55 @@ class RootDistanceResource(Resource):
         disease_networkx=nx.readwrite.gpickle.read_gpickle(disease_networkx_path)
 
         if compound != "any":
-            valid_compounds=nx.ancestors(compound_networkx,compound).add(compound)
+            compound_path=nx.ancestors(compound_networkx,compound).union({str(compound)})
         else:
-            valid_compounds="no_restrictions"
+            compound_path=set()
 
         if (from_species != "any") and (to_species == "any"):
-            valid_species=nx.ancestors(species_networkx,from_species).add(from_species)
+            species_path_from=nx.ancestors(species_networkx,from_species).add(from_species)
+            species_path_to=set()
         elif (from_species == "any") and (to_species != "any"):
-            valid_species=nx.ancestors(species_networkx,to_species).add(to_species)
+            species_path_from=set()
+            species_path_to=nx.ancestors(species_networkx,to_species).add(to_species)
         elif (from_species != "any") and (to_species != "any"):
-            # valid_parents_species_from=nx.ancestors(species_networkx,from_species).append(from_species)
-            # valid_parents_species_to=nx.ancestors(species_networkx,to_species).append(to_species)
             lowest_parent=nx.lowest_common_ancestor(species_networkx,from_species,to_species)
-            path_from=nx.algorithms.shortest_path(species_networkx,lowest_parent,from_species)
-            path_to=nx.algorithms.shortest_path(species_networkx,lowest_parent,to_species)
-            # print(lowest_parent)
-            # print(path_from)
-            # print(path_to)
-            valid_species=set(path_from).union(set(path_to))
-        
-        if (from_species != "any") and (to_species == "any"):
-            valid_species=nx.ancestors(species_networkx,from_species).add(from_species)
-        elif (from_species == "any") and (to_species != "any"):
-            valid_species=nx.ancestors(species_networkx,to_species).add(to_species)
-        elif (from_species != "any") and (to_species != "any"):
-            # valid_parents_species_from=nx.ancestors(species_networkx,from_species).append(from_species)
-            # valid_parents_species_to=nx.ancestors(species_networkx,to_species).append(to_species)
-            lowest_parent=nx.lowest_common_ancestor(species_networkx,from_species,to_species)
-            path_from=nx.algorithms.shortest_path(species_networkx,lowest_parent,from_species)
-            path_to=nx.algorithms.shortest_path(species_networkx,lowest_parent,to_species)
-            # print(lowest_parent)
-            # print(path_from)
-            # print(path_to)
-            valid_species=set(path_from).union(set(path_to))
+            species_path_from=nx.algorithms.shortest_path(species_networkx,lowest_parent,from_species)
+            species_path_to=nx.algorithms.shortest_path(species_networkx,lowest_parent,to_species)
 
         if (from_organ != "any") and (to_organ == "any"):
-            valid_organ=nx.ancestors(organ_networkx,from_organ).add(from_organ)
+            organ_path_from=nx.ancestors(organ_networkx,from_organ).add(from_organ)
+            organ_path_to=set()
         elif (from_organ == "any") and (to_organ != "any"):
-            valid_organ=nx.ancestors(organ_networkx,to_organ).add(to_organ)
+            organ_path_from=set()
+            organ_path_to=nx.ancestors(organ_networkx,to_organ).add(to_organ)
         elif (from_organ != "any") and (to_organ != "any"):
-            # valid_parents_organ_from=nx.ancestors(organ_networkx,from_organ).append(from_organ)
-            # valid_parents_organ_to=nx.ancestors(organ_networkx,to_organ).append(to_organ)
             lowest_parent=nx.lowest_common_ancestor(organ_networkx,from_organ,to_organ)
-            path_from=nx.algorithms.shortest_path(organ_networkx,lowest_parent,from_organ)
-            path_to=nx.algorithms.shortest_path(organ_networkx,lowest_parent,to_organ)
-            # print(lowest_parent)
-            # print(path_from)
-            # print(path_to)
-            valid_organ=set(path_from).union(set(path_to))
+            organ_path_from=nx.algorithms.shortest_path(organ_networkx,lowest_parent,from_organ)
+            organ_path_to=nx.algorithms.shortest_path(organ_networkx,lowest_parent,to_organ)
 
         if (from_disease != "any") and (to_disease == "any"):
-            valid_disease=nx.ancestors(disease_networkx,from_disease).add(from_disease)
+            disease_path_from=nx.ancestors(disease_networkx,from_disease).add(from_disease)
+            disease_path_to=set()
         elif (from_disease == "any") and (to_disease != "any"):
-            valid_disease=nx.ancestors(disease_networkx,to_disease).add(to_disease)
+            disease_path_from=set()
+            disease_path_to=nx.ancestors(disease_networkx,to_disease).add(to_disease)
         elif (from_disease != "any") and (to_disease != "any"):
-            # valid_parents_disease_from=nx.ancestors(disease_networkx,from_disease).append(from_disease)
-            # valid_parents_disease_to=nx.ancestors(disease_networkx,to_disease).append(to_disease)
             lowest_parent=nx.lowest_common_ancestor(disease_networkx,from_disease,to_disease)
-            path_from=nx.algorithms.shortest_path(disease_networkx,lowest_parent,from_disease)
-            path_to=nx.algorithms.shortest_path(disease_networkx,lowest_parent,to_disease)
-            # print(lowest_parent)
-            # print(path_from)
-            # print(path_to)
-            valid_disease=set(path_from).union(set(path_to))
+            disease_path_from=nx.algorithms.shortest_path(disease_networkx,lowest_parent,from_disease)
+            disease_path_to=nx.algorithms.shortest_path(disease_networkx,lowest_parent,to_disease)
+
+        compound_path=list(compound_path)
+        species_path_from=list(species_path_from)
+        species_path_to=list(species_path_to)
+        organ_path_from=list(organ_path_from)
+        organ_path_to=list(organ_path_to)
+        disease_path_from=list(disease_path_from)
+        disease_path_to=list(disease_path_to)
+
+        print(compound_path)
+        print(species_path_from)
+        print(species_path_to)
+        print(organ_path_from)
+        print(organ_path_to)
+        print(disease_path_from)
+        print(disease_path_to)

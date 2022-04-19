@@ -122,28 +122,28 @@ class RootDistanceQuery():
         self.string_node_search_part_1_to=f'''
             create view node_search_part_1_to as
             select
-                species_node_from,
-                organ_node_from,
-                disease_node_from 
+                species_node_to,
+                organ_node_to,
+                disease_node_to 
             from (
                 select
-                    species_node_from,
-                    organ_node_from,
-                    disease_node_from 
+                    species_node_to,
+                    organ_node_to,
+                    disease_node_to 
                 from (
                     select 
-                        species_node_from,
-                        organ_node_from,
-                        disease_node_from 
+                        species_node_to,
+                        organ_node_to,
+                        disease_node_to 
                     from(
                         select 
-                            species_node_from,
-                            organ_node_from,
-                            hftd.node_id as disease_node_from
+                            species_node_to,
+                            organ_node_to,
+                            hftd.node_id as disease_node_to
                         from (
                             select
-                                hfts.node_id as species_node_from,
-                                hfto.node_id as organ_node_from
+                                hfts.node_id as species_node_to,
+                                hfto.node_id as organ_node_to
                             from (
                                     hierarchy_filter_table_species hfts 
                                 cross join
@@ -163,24 +163,24 @@ class RootDistanceQuery():
                     {join_type_species} join 
                         unnest(array{species_path_to})
                     on 
-                        "unnest"=species_node_from 
+                        "unnest"=species_node_to 
                 ) as temp_2
                 {join_type_organ} join 
                     unnest(array{organ_path_to})
                 on
-                    "unnest"=organ_node_from
+                    "unnest"=organ_node_to
             ) as temp_3
             {join_type_disease} join 
                 unnest(array{disease_path_to})
             on
-                "unnest"=disease_node_from            
+                "unnest"=disease_node_to            
         '''
 
     def build_node_search_part_2(
         self
     ):
 
-        self.node_search_part_2=f'''
+        self.string_node_search_part_2=f'''
             create view node_search_part_2 as
             select 
                 species_node_from,
@@ -222,7 +222,7 @@ class RootDistanceQuery():
         else:
             join_type_compound='inner'
 
-        self.node_search_part_3=f'''
+        self.string_node_search_part_3=f'''
             create view node_search_part_3 as
             select
             *
@@ -246,7 +246,7 @@ class RootDistanceQuery():
 
     def build_node_search_part_4(self):
 
-        self.node_search_part_4=f'''
+        self.string_node_search_part_4=f'''
         create view node_search_part_4 as
         select
             *
@@ -258,7 +258,7 @@ class RootDistanceQuery():
 
     def build_node_search_part_5(self):
 
-        self.node_search_part_5=f'''
+        self.string_node_search_part_5=f'''
         create view node_search_part_5 as
         select 
             species_node_from,
@@ -282,8 +282,8 @@ class RootDistanceQuery():
         '''
     def build_delete_views(self):
 
-        self.delete_views=f'''
+        self.string_delete_views=f'''
         drop view node_search_part_1_from cascade;
         drop view node_search_part_1_to cascade;
-        drop view node_search_part_3;
+        drop view node_search_part_3 cascade;
         '''

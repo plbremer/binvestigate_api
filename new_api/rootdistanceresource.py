@@ -3,12 +3,24 @@ import pathlib
 
 from rootdistancequery import RootDistanceQuery
 
+from sqlalchemy import create_engine
+
 from flask import Flask,request
 from flask_restful import Api, Resource, reqparse
 import json
 
 PATH = pathlib.Path(__file__).parent
 DATA_PATH = PATH.joinpath("../datasets").resolve()
+
+my_server='localhost'
+my_database='binvestigate_first'
+my_dialect='postgresql'
+my_driver='psycopg2'
+my_username='rictuar'
+my_password='elaine123'
+my_connection=f'{my_dialect}+{my_driver}://{my_username}:{my_password}@{my_server}/{my_database}'
+my_engine=create_engine(my_connection)
+
 
 class RootDistanceResource(Resource):
 
@@ -98,17 +110,17 @@ class RootDistanceResource(Resource):
             species_from_dfr,
             organ_from_dfr,
             disease_from_dfr,
-            species_from_dfr,
-            organ_from_dfr,
-            disease_from_dfr
+            species_path_from,
+            organ_path_from,
+            disease_path_from
         )
         my_RootDistanceQuery.build_node_search_part_1_to(
             species_to_dfr,
             organ_to_dfr,
             disease_to_dfr,
-            species_to_dfr,
-            organ_to_dfr,
-            disease_to_dfr
+            species_path_to,
+            organ_path_to,
+            disease_path_to
         )
         my_RootDistanceQuery.build_node_search_part_2()
         my_RootDistanceQuery.build_node_search_part_3(
@@ -116,34 +128,40 @@ class RootDistanceResource(Resource):
             compound_path
         )
         my_RootDistanceQuery.build_node_search_part_4()
-
-        # #we delete previously existing views here so that we can execute whatever
-        # my_RootDistanceQuery.build_delete_views()
-
+        my_RootDistanceQuery.build_node_search_part_5()
+        #we delete previously existing views here so that we can execute whatever
+        my_RootDistanceQuery.build_delete_views()
+        
         connection=my_engine.connect()
+        # connection.execute(
+        #     my_RootDistanceQuery.string_delete_views
+        # )
         connection.execute(
-            my_RootDistanceQuery.build_node_search_part_1_from
+            my_RootDistanceQuery.string_node_search_part_1_from
         )
         connection.execute(
-            my_RootDistanceQuery.build_node_search_part_1_to
+            my_RootDistanceQuery.string_node_search_part_1_to
         )
         connection.execute(
-            my_RootDistanceQuery.build_node_search_part_2
+            my_RootDistanceQuery.string_node_search_part_2
         )
         connection.execute(
-            my_RootDistanceQuery.build_node_search_part_3
+            my_RootDistanceQuery.string_node_search_part_3
         )
         connection.execute(
-            my_RootDistanceQuery.build_node_search_part_4
+            my_RootDistanceQuery.string_node_search_part_4
         )
         connection.execute(
-            my_RootDistanceQuery.build_node_search_part_5
+            my_RootDistanceQuery.string_node_search_part_5
         )
         temp_cursor=connection.execute(
             f'''
             select * from node_search_part_5
             limit {temp_limit} offset {temp_offset}
             '''
+        )
+        connection.execute(
+            my_RootDistanceQuery.string_delete_views
         )
 
         if (temp_cursor.rowcount <= 0):

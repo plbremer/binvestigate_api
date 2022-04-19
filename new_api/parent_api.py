@@ -11,6 +11,7 @@ from volcanoquery import VolcanoQuery
 from metadataquery import MetadataQuery
 
 from rootdistanceresource import RootDistanceResource
+from compoundresource import CompoundResource
 
 app=Flask(__name__)
 api=Api(app)
@@ -120,6 +121,7 @@ class MetadataResource(Resource):
 api.add_resource(VolcanoResource,'/volcanoresource/')
 api.add_resource(MetadataResource,'/metadataresource/')
 api.add_resource(RootDistanceResource,'/rootdistanceresource/')
+api.add_resource(CompoundResource,'/compoundresource/')
 
 if __name__ == '__main__':
     app.run(debug=True)

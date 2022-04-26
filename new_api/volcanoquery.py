@@ -13,7 +13,7 @@ class VolcanoQuery():
                 temp_where_clause='('+temp_list[0][1:-1]+' '+temp_list[1][1:]+' '+temp_list[2]+')'
                 where_clauses.append(temp_where_clause)
             elif (temp_list[1]=='scontains'):
-                temp_where_clause='('+temp_list[0][1:-1]+' ~ %'+temp_list[2]+'% )'
+                temp_where_clause='('+temp_list[0][1:-1]+' like \'%%'+temp_list[2]+'%%\')'
                 where_clauses.append(temp_where_clause)
         where_clause_string=' and '
         for where_clause in where_clauses:
@@ -57,6 +57,11 @@ class VolcanoQuery():
         elif (classes=='Yes') and (knowns=='Yes') and (unknowns=='Yes'):
             return ''
 
+    def construct_pagination(self, current_page,page_size):
+        temp_offset=page_size*current_page
+        temp_limit=page_size
+        pagination_string=f'limit {temp_limit} offset {temp_offset}'
+        return pagination_string
 
     def __init__(self,
         from_species,
@@ -122,7 +127,8 @@ class VolcanoQuery():
         total_compound_string=self.construct_compound_where(include_classes,include_knowns,include_unknowns)
         where_string=self.construct_filter_where(column_filter)
         order_by_string=self.construct_order_by(column_sort)
-        
+        pagination_string=self.construct_pagination(current_page,page_size)
+
         self.query=f'''
             select 
                 oq.compound,
@@ -162,9 +168,8 @@ class VolcanoQuery():
             compound_properties cp 
             on
             oq.compound=cp.identifier
-            {total_compound_string} 
-            {where_string}
-            {order_by_string}
+            {total_compound_string} {where_string} {order_by_string}
+            {pagination_string}
         '''
 
 

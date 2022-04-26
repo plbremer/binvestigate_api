@@ -47,6 +47,10 @@ class VolcanoResource(Resource):
         # "fold_average_min":0,
         # "p_welch_max":1,
         # "p_mann_max":1
+        #pprint(request.json['column_sort'][0])
+        #pprint(request.json['column_filter'])
+        pprint(request.json['sort_by'])
+        pprint(request.json['filter_query'])
         temp_VolcanoQuery=VolcanoQuery(
             request.json['from_species'],
             request.json['from_organ'],
@@ -54,12 +58,14 @@ class VolcanoResource(Resource):
             request.json['to_species'],
             request.json['to_organ'],
             request.json['to_disease'],
-            request.json['include_known'],
-            request.json['include_unknown'],
-            request.json['fold_median_min'],
-            request.json['fold_average_min'],
-            request.json['p_welch_max'],
-            request.json['p_welch_max']
+            #request.json['include_bins'],
+            request.json['include_classes'],
+            request.json['include_knowns'],
+            request.json['include_unknowns'],
+            request.json['page_current'],
+            request.json['page_size'],
+            request.json['sort_by'],
+            request.json['filter_query']
         )
         pprint(temp_VolcanoQuery.query)
         
@@ -124,5 +130,5 @@ api.add_resource(RootDistanceResource,'/rootdistanceresource/')
 api.add_resource(CompoundResource,'/compoundresource/')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True,port=4999)
 

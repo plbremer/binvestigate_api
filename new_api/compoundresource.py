@@ -21,15 +21,21 @@ class CompoundResource(Resource):
         '''
         '''
         compound=request.json['compound']
-        from_species=str(request.json['from_species'])
+        from_species=request.json['from_species']
         from_organ=request.json['from_organ']
         from_disease=request.json['from_disease']
-        to_species=str(request.json['to_species'])
+        to_species=request.json['to_species']
         to_organ=request.json['to_organ']
         to_disease=request.json['to_disease']
+        page_current=request.json['page_current']
+        page_size=request.json['page_size']
+        sort_by=request.json['sort_by']
+        filter_query=request.json['filter_query']
+
+        print(request.json)
 
         my_CompoundQuery=CompoundQuery()
-        my_CompoundQuery.build_query(
+        my_CompoundQuery.build_query_1(
             compound,
             from_species,
             from_organ,
@@ -38,12 +44,27 @@ class CompoundResource(Resource):
             to_organ,
             to_disease
         )
+        my_CompoundQuery.build_query_2(
+            page_current,
+            page_size,
+            sort_by,
+            filter_query
+        )
+        my_CompoundQuery.build_delete_views()
 
-        print(my_CompoundQuery.query)
+        #my_CompoundQuery.build_query_
+
+        #print(my_CompoundQuery.query)
 
         connection=my_engine.connect()
+        connection.execute(
+            my_CompoundQuery.query_1
+        )
         temp_cursor=connection.execute(
-            my_CompoundQuery.query
+            my_CompoundQuery.query_2
+        )
+        connection.execute(
+            my_CompoundQuery.string_delete_views
         )
 
         if (temp_cursor.rowcount <= 0):

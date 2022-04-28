@@ -5,7 +5,7 @@ class VolcanoQuery():
     def construct_filter_where(self,filter_string):
         if len(filter_string)==0:
             return ''
-        filter_list=filter_string.split('&&')
+        filter_list=filter_string.split(' && ')
         where_clauses=list()
         for filter_statement in filter_list:
             temp_list=filter_statement.split(' ')

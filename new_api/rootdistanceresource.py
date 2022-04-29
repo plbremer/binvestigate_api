@@ -1,5 +1,6 @@
 import networkx as nx
 import pathlib
+from pprint import pprint
 
 from rootdistancequery import RootDistanceQuery
 
@@ -33,22 +34,31 @@ class RootDistanceResource(Resource):
         step 3
         execute the query, return results
         '''
+
+        #################33
+        print('##############################')
+        pprint(request.json)
+
         compound=request.json['compound']
-        from_species=str(request.json['from_species'])
+        from_species=request.json['from_species']
         from_organ=request.json['from_organ']
         from_disease=request.json['from_disease']
-        to_species=str(request.json['to_species'])
+        to_species=request.json['to_species']
         to_organ=request.json['to_organ']
         to_disease=request.json['to_disease']
-        compound_dfr=request.json['compound_dfr']
-        species_from_dfr=request.json['species_from_dfr']
-        organ_from_dfr=request.json['organ_from_dfr']
-        disease_from_dfr=request.json['disease_from_dfr']
-        species_to_dfr=request.json['species_to_dfr']
-        organ_to_dfr=request.json['organ_to_dfr']
-        disease_to_dfr=request.json['disease_to_dfr']
-        temp_limit=request.json['page_size']
-        temp_offset=(request.json['page_size']*request.json['page_current'])        
+        # compound_dfr=request.json['compound_dfr']
+        # species_from_dfr=request.json['species_from_dfr']
+        # organ_from_dfr=request.json['organ_from_dfr']
+        # disease_from_dfr=request.json['disease_from_dfr']
+        # species_to_dfr=request.json['species_to_dfr']
+        # organ_to_dfr=request.json['organ_to_dfr']
+        # disease_to_dfr=request.json['disease_to_dfr']
+        # temp_limit=request.json['page_size']
+        # temp_offset=(request.json['page_size']*request.json['page_current'])        
+        page_current=request.json['page_current']
+        page_size=request.json['page_size']
+        sort_by=request.json['sort_by']
+        filter_query=request.json['filter_query']
 
         compound_networkx_path=DATA_PATH.joinpath("compounds_networkx.bin")
         compound_networkx=nx.readwrite.gpickle.read_gpickle(compound_networkx_path)
@@ -59,44 +69,64 @@ class RootDistanceResource(Resource):
         disease_networkx_path=DATA_PATH.joinpath("disease_networkx.bin")
         disease_networkx=nx.readwrite.gpickle.read_gpickle(disease_networkx_path)
 
-        if compound != "any":
-            compound_path=nx.ancestors(compound_networkx,compound).union({str(compound)})
+        if compound != None:
+            compound_path=nx.ancestors(compound_networkx,int(compound)).union({str(compound)})
         else:
-            compound_path=set()
+            compound_path=[str(temp_node) for temp_node in compound_networkx.nodes]
 
-        if (from_species != "any") and (to_species == "any"):
-            species_path_from=nx.ancestors(species_networkx,from_species).add(from_species)
-            species_path_to=set()
-        elif (from_species == "any") and (to_species != "any"):
-            species_path_from=set()
-            species_path_to=nx.ancestors(species_networkx,to_species).add(to_species)
-        elif (from_species != "any") and (to_species != "any"):
+        if (from_species != None) and (to_species == None):
+            species_path_from=nx.ancestors(species_networkx,from_species)
+            species_path_from.add(from_species)
+            species_path_to=species_networkx.nodes
+        elif (from_species == None) and (to_species != None):
+            species_path_from=species_networkx.nodes
+            species_path_to=nx.ancestors(species_networkx,to_species)
+            species_path_to.add(to_species)
+        elif (from_species != None) and (to_species != None):
             lowest_parent=nx.lowest_common_ancestor(species_networkx,from_species,to_species)
             species_path_from=nx.algorithms.shortest_path(species_networkx,lowest_parent,from_species)
             species_path_to=nx.algorithms.shortest_path(species_networkx,lowest_parent,to_species)
+        elif (from_species == None) and (to_species == None):
+            species_path_from=species_networkx.nodes
+            species_path_to=species_networkx.nodes
 
-        if (from_organ != "any") and (to_organ == "any"):
-            organ_path_from=nx.ancestors(organ_networkx,from_organ).add(from_organ)
-            organ_path_to=set()
-        elif (from_organ == "any") and (to_organ != "any"):
-            organ_path_from=set()
-            organ_path_to=nx.ancestors(organ_networkx,to_organ).add(to_organ)
-        elif (from_organ != "any") and (to_organ != "any"):
+        if (from_organ != None) and (to_organ == None):
+            organ_path_from=nx.ancestors(organ_networkx,from_organ)
+            organ_path_from.add(from_organ)
+            organ_path_to=organ_networkx.nodes
+        elif (from_organ == None) and (to_organ != None):
+            organ_path_from=organ_networkx.nodes
+            organ_path_to=nx.ancestors(organ_networkx,to_organ)
+            organ_path_to.add(to_organ)
+        elif (from_organ != None) and (to_organ != None):
             lowest_parent=nx.lowest_common_ancestor(organ_networkx,from_organ,to_organ)
             organ_path_from=nx.algorithms.shortest_path(organ_networkx,lowest_parent,from_organ)
             organ_path_to=nx.algorithms.shortest_path(organ_networkx,lowest_parent,to_organ)
+        elif (from_organ == None) and (to_organ == None):
+            organ_path_from=organ_networkx.nodes
+            organ_path_to=organ_networkx.nodes
 
-        if (from_disease != "any") and (to_disease == "any"):
-            disease_path_from=nx.ancestors(disease_networkx,from_disease).add(from_disease)
-            disease_path_to=set()
-        elif (from_disease == "any") and (to_disease != "any"):
-            disease_path_from=set()
-            disease_path_to=nx.ancestors(disease_networkx,to_disease).add(to_disease)
-        elif (from_disease != "any") and (to_disease != "any"):
+        if (from_disease != None) and (to_disease == None):
+            disease_path_from=nx.ancestors(disease_networkx,from_disease)
+            disease_path_from.add(from_disease)
+            disease_path_to=disease_networkx.nodes
+        elif (from_disease == None) and (to_disease != None):
+            disease_path_from=disease_networkx.nodes
+            disease_path_to=nx.ancestors(disease_networkx,to_disease)
+            disease_path_to.add(to_disease)
+        elif (from_disease != None) and (to_disease != None):
             lowest_parent=nx.lowest_common_ancestor(disease_networkx,from_disease,to_disease)
             disease_path_from=nx.algorithms.shortest_path(disease_networkx,lowest_parent,from_disease)
             disease_path_to=nx.algorithms.shortest_path(disease_networkx,lowest_parent,to_disease)
+        elif (from_disease == None) and (to_disease == None):
+            disease_path_from=disease_networkx.nodes
+            disease_path_to=disease_networkx.nodes
 
+        print('~~~~~~~~~~~~~~~~')
+        # print(to_species)
+        print(species_path_from)
+        # print(from_organ)
+        # print(organ_path_from)
         compound_path=list(compound_path)
         species_path_from=list(species_path_from)
         species_path_to=list(species_path_to)
@@ -105,30 +135,39 @@ class RootDistanceResource(Resource):
         disease_path_from=list(disease_path_from)
         disease_path_to=list(disease_path_to)
 
+        # print(compound_path)
+        # print('$$$$$$$$$$$$$$$$$$$$$$$$$$')
+
         my_RootDistanceQuery=RootDistanceQuery()
         my_RootDistanceQuery.build_node_search_part_1_from(
-            species_from_dfr,
-            organ_from_dfr,
-            disease_from_dfr,
+            # species_from_dfr,
+            # organ_from_dfr,
+            # disease_from_dfr,
             species_path_from,
             organ_path_from,
             disease_path_from
         )
         my_RootDistanceQuery.build_node_search_part_1_to(
-            species_to_dfr,
-            organ_to_dfr,
-            disease_to_dfr,
+            # species_to_dfr,
+            # organ_to_dfr,
+            # disease_to_dfr,
             species_path_to,
             organ_path_to,
             disease_path_to
         )
         my_RootDistanceQuery.build_node_search_part_2()
         my_RootDistanceQuery.build_node_search_part_3(
-            compound_dfr,
+            # compound_dfr,
             compound_path
         )
         my_RootDistanceQuery.build_node_search_part_4()
         my_RootDistanceQuery.build_node_search_part_5()
+        my_RootDistanceQuery.build_node_search_part_6(
+            page_current,
+            page_size,
+            sort_by,
+            filter_query
+        )
         #we delete previously existing views here so that we can execute whatever
         my_RootDistanceQuery.build_delete_views()
         
@@ -155,11 +194,14 @@ class RootDistanceResource(Resource):
             my_RootDistanceQuery.string_node_search_part_5
         )
         temp_cursor=connection.execute(
-            f'''
-            select * from node_search_part_5
-            limit {temp_limit} offset {temp_offset}
-            '''
+            my_RootDistanceQuery.string_node_search_part_6
         )
+        # temp_cursor=connection.execute(
+        #     f'''
+        #     select * from node_search_part_6
+        #     limit {temp_limit} offset {temp_offset}
+        #     '''
+        # )
         connection.execute(
             my_RootDistanceQuery.string_delete_views
         )

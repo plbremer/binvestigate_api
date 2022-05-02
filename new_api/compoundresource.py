@@ -50,7 +50,7 @@ class CompoundResource(Resource):
             sort_by,
             filter_query
         )
-        my_CompoundQuery.build_delete_views()
+        # my_CompoundQuery.build_delete_views()
 
         #my_CompoundQuery.build_query_
 
@@ -63,9 +63,9 @@ class CompoundResource(Resource):
         temp_cursor=connection.execute(
             my_CompoundQuery.query_2
         )
-        connection.execute(
-            my_CompoundQuery.string_delete_views
-        )
+        # connection.execute(
+        #     my_CompoundQuery.string_delete_views
+        # )
 
         if (temp_cursor.rowcount <= 0):
             connection.close()

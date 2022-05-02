@@ -169,7 +169,7 @@ class RootDistanceResource(Resource):
             filter_query
         )
         #we delete previously existing views here so that we can execute whatever
-        my_RootDistanceQuery.build_delete_views()
+        # my_RootDistanceQuery.build_delete_views()
         
         connection=my_engine.connect()
         # connection.execute(
@@ -202,9 +202,9 @@ class RootDistanceResource(Resource):
         #     limit {temp_limit} offset {temp_offset}
         #     '''
         # )
-        connection.execute(
-            my_RootDistanceQuery.string_delete_views
-        )
+        # connection.execute(
+        #     my_RootDistanceQuery.string_delete_views
+        # )
 
         if (temp_cursor.rowcount <= 0):
             connection.close()

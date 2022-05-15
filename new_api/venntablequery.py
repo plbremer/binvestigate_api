@@ -1,12 +1,18 @@
 class VennTableQuery():
 
     def construct_one_clause(self,one_specification):
-        temp_list=one_specification.split(' ')
+        #this worked when there werent spaces in the names of the clumns
+        #temp_list=one_specification.split(' ')
+        temp_list=['','','']
+        temp_list[0]=one_specification[one_specification.find('{'):one_specification.find('}')+1]
+        temp_list[1]=one_specification.split(' ')[-2]
+        temp_list[2]=one_specification.split(' ')[-1]
         if (temp_list[1]=='s>') or (temp_list[1]=='s>=') or (temp_list[1]=='s<') or (temp_list[1]=='s<=') or (temp_list[1]=='s='):
-            temp_where_clause='('+temp_list[0][1:-1]+' '+temp_list[1][1:]+' '+temp_list[2]+')'
+            temp_where_clause='(\"'+temp_list[0][1:-1]+'\" '+temp_list[1][1:]+' '+temp_list[2]+')'
             return temp_where_clause
         elif (temp_list[1]=='scontains'):
-            temp_where_clause='('+temp_list[0][1:-1]+' like \'%%'+temp_list[2]+'%%\')'
+            temp_where_clause='(\"'+temp_list[0][1:-1]+'\" like \'%%'+temp_list[2]+'%%\')'
+            print(temp_where_clause)
             return temp_where_clause
 
     def construct_filter_where(self,filter_string):
@@ -18,6 +24,8 @@ class VennTableQuery():
         If we do have multiple conditions, then we do a lot of coercing to get our condition
         to read like multiple other conditions
         '''
+        print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~``')
+        print(filter_string)
         if len(filter_string)==0:
             return ''
         filter_list=filter_string.split(' && ')
@@ -69,10 +77,11 @@ class VennTableQuery():
                     substring=substring+')'     
                 where_clauses.append(substring)
         where_clause_string=' and '
+        print(where_clauses)
         for where_clause in where_clauses:
             where_clause_string=where_clause_string+where_clause+' and '
         where_clause_string=where_clause_string[5:-5]
-        where_clause_string=' where '+where_clause_string
+        #where_clause_string=' where '+where_clause_string
         return where_clause_string
 
     def construct_order_by(self,order_list):
@@ -128,7 +137,7 @@ class VennTableQuery():
         #sort_by,
         #filter_query,
         dropdown_triplet_selection_value,
-        #slider_percent_present_value,
+        slider_percent_present_value,
         toggle_average_true_value
     ):
     
@@ -137,25 +146,29 @@ class VennTableQuery():
             intensity_type='intensity_average'
         elif toggle_average_true_value==False:
             intensity_type='intensity_median'
+        slider_percent_present_value*=0.01
 
     
         main_line_list=[
-            f'max({intensity_type}) filter (where "species"=\'{sod_parallel_list[i][0]}\' and "organ"=\'{sod_parallel_list[i][1]}\' and "disease"=\'{sod_parallel_list[i][2]}\') as "{dropdown_triplet_selection_value[i]}",\n' for i in range(len(dropdown_triplet_selection_value))
+            f'case when (max({intensity_type}) filter (where "species"=\'{sod_parallel_list[i][0]}\' and "organ"=\'{sod_parallel_list[i][1]}\' and "disease"=\'{sod_parallel_list[i][2]}\')>{slider_percent_present_value}) then (max({intensity_type}) filter (where "species"=\'{sod_parallel_list[i][0]}\' and "organ"=\'{sod_parallel_list[i][1]}\' and "disease"=\'{sod_parallel_list[i][2]}\')) else null end as "{dropdown_triplet_selection_value[i]}",\n' for i in range(len(dropdown_triplet_selection_value))
+            #f'max({intensity_type}) filter (where "species"=\'{sod_parallel_list[i][0]}\' and "organ"=\'{sod_parallel_list[i][1]}\' and "disease"=\'{sod_parallel_list[i][2]}\') as "{dropdown_triplet_selection_value[i]}",\n' for i in range(len(dropdown_triplet_selection_value))
         ]
 
         main_line=''.join(main_line_list)
+        main_line=main_line[:-2]+'\n'
         # for  i in range(len(main_line_list)):
         #     main_line+=main_line_list[i]
 
         self.query_1=f'''
+            create temporary view temp_venn_1 as
             select
-            bin,\n'''+main_line+'''from
+            bin,
+            compound,\n'''+main_line+'''from
             non_ratio_table nrt
             group by
-            bin
+            bin,compound 
             order by
-            bin
-            )        
+            bin     
         '''
         # select * from (
         # select
@@ -173,3 +186,43 @@ class VennTableQuery():
         # "Homo_Sapiens-Urine-No">0.04
 
         print(self.query_1)
+
+    def build_query_2(
+        self,
+        page_current,
+        page_size,
+        sort_by,
+        filter_query,
+        radio_items_filter_value,
+        dropdown_triplet_selection_value
+    ):    
+
+        where_string=self.construct_filter_where(filter_query)
+        order_by_string=self.construct_order_by(sort_by)
+        pagination_string=self.construct_pagination(page_current,page_size)          
+
+        if radio_items_filter_value=='no_filter':
+            radio_filter_string=''
+        elif radio_items_filter_value=='common':
+            radio_filter_string_list=[
+                f'(\"{element}\" is not null) ' for element in dropdown_triplet_selection_value
+            ]
+            radio_filter_string=' and '.join(radio_filter_string_list)
+        
+        if len(filter_query)!=0 or len(radio_filter_string)!=0:
+            where_string_beginning='where '
+        else:
+            where_string_beginning=''
+
+        if len(radio_filter_string)!=0:
+            where_string_middle=' and '
+        else:
+            where_string_middle=''
+
+        self.query_2=f'''
+        select * from temp_venn_1
+        {where_string_beginning} {where_string} {where_string_middle} {radio_filter_string} {order_by_string}
+        {pagination_string}
+        '''
+        print('++++++++++++++++++++++++++++++++++++++++++++++++++')
+        print(self.query_2)

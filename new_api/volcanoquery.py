@@ -223,8 +223,7 @@ class VolcanoQuery():
             compound_properties cp 
             on
             oq.compound=cp.identifier
-            {total_compound_string} {where_string} {order_by_string}
-            {pagination_string}
+            {total_compound_string} {where_string} {order_by_string} {pagination_string}
         '''
 
 

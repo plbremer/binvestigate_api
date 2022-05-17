@@ -150,7 +150,7 @@ class VennTableQuery():
 
     
         main_line_list=[
-            f'case when (max({intensity_type}) filter (where "species"=\'{sod_parallel_list[i][0]}\' and "organ"=\'{sod_parallel_list[i][1]}\' and "disease"=\'{sod_parallel_list[i][2]}\')>{slider_percent_present_value}) then (max({intensity_type}) filter (where "species"=\'{sod_parallel_list[i][0]}\' and "organ"=\'{sod_parallel_list[i][1]}\' and "disease"=\'{sod_parallel_list[i][2]}\')) else null end as "{dropdown_triplet_selection_value[i]}",\n' for i in range(len(dropdown_triplet_selection_value))
+            f'case when (max(percent_present) filter (where "species"=\'{sod_parallel_list[i][0]}\' and "organ"=\'{sod_parallel_list[i][1]}\' and "disease"=\'{sod_parallel_list[i][2]}\')>{slider_percent_present_value}) then (max({intensity_type}) filter (where "species"=\'{sod_parallel_list[i][0]}\' and "organ"=\'{sod_parallel_list[i][1]}\' and "disease"=\'{sod_parallel_list[i][2]}\')) else null end as "{dropdown_triplet_selection_value[i]}",\n' for i in range(len(dropdown_triplet_selection_value))
             #f'max({intensity_type}) filter (where "species"=\'{sod_parallel_list[i][0]}\' and "organ"=\'{sod_parallel_list[i][1]}\' and "disease"=\'{sod_parallel_list[i][2]}\') as "{dropdown_triplet_selection_value[i]}",\n' for i in range(len(dropdown_triplet_selection_value))
         ]
 
@@ -221,8 +221,7 @@ class VennTableQuery():
 
         self.query_2=f'''
         select * from temp_venn_1
-        {where_string_beginning} {where_string} {where_string_middle} {radio_filter_string} {order_by_string}
-        {pagination_string}
+        {where_string_beginning} {where_string} {where_string_middle} {radio_filter_string} {order_by_string} {pagination_string}
         '''
         print('++++++++++++++++++++++++++++++++++++++++++++++++++')
         print(self.query_2)

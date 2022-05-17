@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 
-from venntablequery import VennTableQuery
+from venndiagramquery import VennDiagramQuery
 
 from flask import Flask,request
 from flask_restful import Api, Resource, reqparse
@@ -16,21 +16,20 @@ my_connection=f'{my_dialect}+{my_driver}://{my_username}:{my_password}@{my_serve
 my_engine=create_engine(my_connection)
 
 
-class VennTableResource(Resource):
+class VennDiagramResource(Resource):
 
     def post(self):
         '''
         '''
-        print('********************************************')
-        print(request.json)
-        page_current=request.json["page_current"]
-        page_size=request.json["page_size"]
-        sort_by=request.json["sort_by"]
-        filter_query=request.json["filter_query"]
+
+        #page_current=request.json["page_current"]
+        #page_size=request.json["page_size"]
+        #sort_by=request.json["sort_by"]
+        #filter_query=request.json["filter_query"]
         dropdown_triplet_selection_value=request.json["dropdown_triplet_selection_value"]
         slider_percent_present_value=request.json["slider_percent_present_value"]
-        toggle_average_true_value=request.json["toggle_average_true_value"]
-        radio_items_filter_value=request.json["radio_items_filter_value"]
+        #toggle_average_true_value=request.json["toggle_average_true_value"]
+        #radio_items_filter_value=request.json["radio_items_filter_value"]
 
         # compound=request.json['compound']
         # from_species=request.json['from_species']
@@ -46,25 +45,25 @@ class VennTableResource(Resource):
 
         print(request.json)
 
-        my_VennTableQuery=VennTableQuery()
-        my_VennTableQuery.build_query_1(
+        my_VennDiagramQuery=VennDiagramQuery()
+        my_VennDiagramQuery.build_query_1(
             #page_current,
             #page_size,
             #sort_by,
             #filter_query,
             dropdown_triplet_selection_value,
             slider_percent_present_value,
-            toggle_average_true_value
+            #toggle_average_true_value
         )
         #print
-        my_VennTableQuery.build_query_2(
-            page_current,
-            page_size,
-            sort_by,
-            filter_query,
-            radio_items_filter_value,
-            dropdown_triplet_selection_value
-        )
+        # my_VennTableQuery.build_query_2(
+        #     #page_current,
+        #     #page_size,
+        #     #sort_by,
+        #     filter_query,
+        #     radio_items_filter_value,
+        #     dropdown_triplet_selection_value
+        # )
         # # my_CompoundQuery.build_delete_views()
 
         # #my_CompoundQuery.build_query_
@@ -72,12 +71,12 @@ class VennTableResource(Resource):
         # #print(my_CompoundQuery.query)
 
         connection=my_engine.connect()
-        connection.execute(
-            my_VennTableQuery.query_1
-        )
         temp_cursor=connection.execute(
-            my_VennTableQuery.query_2
+            my_VennDiagramQuery.query_1
         )
+        # temp_cursor=connection.execute(
+        #     my_VennTableQuery.query_2
+        # )
         # # connection.execute(
         # #     my_CompoundQuery.string_delete_views
         # # )

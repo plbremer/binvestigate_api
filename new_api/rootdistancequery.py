@@ -702,8 +702,7 @@ class RootDistanceQuery():
         compound_properties cp 
         on
         foo_6.compound=cp.identifier 
-        {where_string} {order_by_string}
-        {pagination_string}
+        {where_string} {order_by_string} {pagination_string}
         '''
         # {where_string} {order_by_string}
         # {pagination_string}   

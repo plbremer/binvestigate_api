@@ -209,19 +209,32 @@ class VennTableQuery():
             ]
             radio_filter_string=' and '.join(radio_filter_string_list)
         
-        if len(filter_query)!=0 or len(radio_filter_string)!=0:
+        print('-0----------------------')
+        print(filter_query)
+        print(radio_filter_string)
+        print(where_string)
+        if len(where_string)!=0 or len(radio_filter_string)!=0:
             where_string_beginning='where '
         else:
             where_string_beginning=''
 
+        where_string_middle=''
+        if len(where_string)!=0:
+            where_string_middle+=where_string
+        if len(where_string)!=0 and len(radio_filter_string)!=0:
+            where_string_middle+=' and '
         if len(radio_filter_string)!=0:
-            where_string_middle=' and '
-        else:
-            where_string_middle=''
+            where_string_middle+=radio_filter_string
+
+        # if len(radio_filter_string)!=0:
+        #     where_string_middle=' and '
+        # else:
+        #     where_string_middle=''
+        
 
         self.query_2=f'''
         select * from temp_venn_1
-        {where_string_beginning} {where_string} {where_string_middle} {radio_filter_string} {order_by_string} {pagination_string}
+        {where_string_beginning} {where_string_middle} {order_by_string} {pagination_string}
         '''
         print('++++++++++++++++++++++++++++++++++++++++++++++++++')
         print(self.query_2)

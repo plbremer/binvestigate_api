@@ -13,14 +13,23 @@ import json
 PATH = pathlib.Path(__file__).parent
 DATA_PATH = PATH.joinpath("../datasets").resolve()
 
-my_server='localhost'
-my_database='binvestigate_first'
+# my_server='localhost'
+# my_database='binvestigate_first'
+# my_dialect='postgresql'
+# my_driver='psycopg2'
+# my_username='rictuar'
+# my_password='elaine123'
+# my_connection=f'{my_dialect}+{my_driver}://{my_username}:{my_password}@{my_server}/{my_database}'
+# my_engine=create_engine(my_connection)
+
+my_server='fold-result-database.czbab8f7pgfj.us-east-2.rds.amazonaws.com:5430'
+my_database='foldresults'
 my_dialect='postgresql'
 my_driver='psycopg2'
-my_username='rictuar'
+my_username='postgres'
 my_password='elaine123'
 my_connection=f'{my_dialect}+{my_driver}://{my_username}:{my_password}@{my_server}/{my_database}'
-my_engine=create_engine(my_connection)
+my_engine=create_engine(my_connection)#,echo=True)
 
 
 class RootDistanceResource(Resource):
